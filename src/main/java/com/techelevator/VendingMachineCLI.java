@@ -131,6 +131,13 @@ public class VendingMachineCLI {
 		Log.log(formattedDate + action);
 	}
 
+	public double twoDecimals(double money)
+	{
+		String toTwoDecimals = String.format("%.2f", money);
+		return Double.parseDouble(toTwoDecimals);
+	}
+
+
 	public void selectProduct()
 	{
 		displayMenu();
@@ -157,6 +164,8 @@ public class VendingMachineCLI {
 				{
 					double beforeMoney = currentMoney;
 					currentMoney -= item.getPrice();
+					double roundToTwoDecimals = twoDecimals(currentMoney);
+					currentMoney = roundToTwoDecimals;
 					double afterMoney = currentMoney;
 
 					String itemType = item.getType();
