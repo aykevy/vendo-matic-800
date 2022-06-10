@@ -74,7 +74,17 @@ public class VendingMachineCLI {
 	*/
 	public void populate()
 	{
-		File vendingMachineItems = new File(System.getProperty("user.dir") + "\\" + "vendingmachine.csv");
+		String path = "";
+		String os = System.getProperty("os.name");
+		if (os.toLowerCase().contains("win"))
+		{
+			path = System.getProperty("user.dir") + "\\" + "vendingmachine.csv";
+		}
+		else if (os.toLowerCase().contains("mac"))
+		{
+			path = System.getProperty("user.dir") + "/" + "vendingmachine.csv";
+		}
+		File vendingMachineItems = new File(path);
 		try (Scanner content = new Scanner(vendingMachineItems))
 		{
 			while (content.hasNextLine())
