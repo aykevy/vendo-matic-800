@@ -5,11 +5,7 @@ import com.techelevator.view.Menu;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.SQLOutput;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 public class VendingMachineCLI {
 
@@ -82,7 +78,7 @@ public class VendingMachineCLI {
 	public void purchaseMenu()
 	{
 		System.out.println("");
-		System.out.println("Current Money Provided: " + currentMoney);
+		System.out.println("Current Money Provided: $" + currentMoney);
 		String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_PROCESS_OPTIONS);
 		if (choice2.equals(PURCHASE_PROCESS_OPTION_FEED_MONEY))
 		{
@@ -100,18 +96,25 @@ public class VendingMachineCLI {
 
 	public void feedMoney()
 	{
-		System.out.print("How much money you want to put in (whole dollar amounts): ");
-		Scanner userInput = new Scanner(System.in);
-		String answer = userInput.nextLine();
-		double money = Double.parseDouble(answer);
-		if ((int)money == money)
+		try
 		{
-			this.currentMoney += money;
-			System.out.println("You added: " + money + "! Current Money Provided: " + this.currentMoney);
+			System.out.print("How much money do you want to put in (whole dollar amounts): ");
+			Scanner userInput = new Scanner(System.in);
+			String answer = userInput.nextLine();
+			double money = Double.parseDouble(answer);
+			if ((int) money == money)
+			{
+				this.currentMoney += money;
+				System.out.println("You added: $" + money + "! Current Money Provided: $" + this.currentMoney);
+			}
+			else
+			{
+				System.out.println("The amount of money you have given is not in whole dollars, try again!");
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			System.out.println("The amount of money you have given is not in whole dollars, try again!");
+			System.out.println("The amount you entered is an invalid input!");
 		}
 	}
 
@@ -120,7 +123,7 @@ public class VendingMachineCLI {
 		displayMenu();
 		System.out.print("Which product would you like to select: ");
 		Scanner userInput = new Scanner(System.in);
-		String answer = userInput.nextLine();
+		String answer = userInput.nextLine().toUpperCase();
 
 		if (!availableItems.containsKey(answer))
 		{
@@ -157,7 +160,8 @@ public class VendingMachineCLI {
 							System.out.println("Chew Chew, Yum!");
 							break;
 					}
-					System.out.println("Current Money Provided: " + currentMoney);
+					System.out.println("Current Money Provided: $" + currentMoney);
+					purchaseMenu();
 				}
 				else
 				{
@@ -172,14 +176,23 @@ public class VendingMachineCLI {
 	public void displayChange(int quarters, int dimes, int nickels)
 	{
 		System.out.println("Your change: ");
-		System.out.println("Number Of Quarters: " + quarters);
-		System.out.println("Number Of Dimes: " + dimes);
-		System.out.println("Number Of Nickels: " + nickels);
+		if (quarters > 0)
+		{
+			System.out.println("Number of Quarters: " + quarters);
+		}
+		if (dimes > 0)
+		{
+			System.out.println("Number Of Dimes: " + dimes);
+		}
+		if (nickels > 0)
+		{
+			System.out.println("Number Of Nickels: " + nickels);
+		}
 	}
 
 	public void finishTransaction()
 	{
-		System.out.println("Current Money Provided: " + currentMoney);
+		System.out.println("Current Money Provided: $" + currentMoney);
 		int numberOfQuarters = 0; //.25
 		int numberOfDimes = 0; //.10
 		int numberOfNickels = 0; //.05
