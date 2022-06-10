@@ -145,6 +145,7 @@ public class VendingMachineCLI {
 					currentMoney -= item.getPrice();
 					String itemType = item.getType();
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
+					System.out.println("Dispensing item.....");
 					switch (itemType)
 					{
 						case "Chip":
@@ -160,7 +161,6 @@ public class VendingMachineCLI {
 							System.out.println("Chew Chew, Yum!");
 							break;
 					}
-					System.out.println("Current Money Provided: $" + currentMoney);
 					purchaseMenu();
 				}
 				else
