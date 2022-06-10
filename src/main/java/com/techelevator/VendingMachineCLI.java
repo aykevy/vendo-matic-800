@@ -3,13 +3,11 @@ package com.techelevator;
 import com.techelevator.view.Item;
 import com.techelevator.view.Log;
 import com.techelevator.view.Menu;
+import com.techelevator.view.Sales;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class VendingMachineCLI {
 
@@ -17,7 +15,8 @@ public class VendingMachineCLI {
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
 	private static final String MAIN_MENU_OPTION_EXIT = "Exit";
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT };
+	private static final String MAIN_MENU_OPTION_HIDDEN = "Sales Report";
+	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT, MAIN_MENU_OPTION_HIDDEN};
 
 	/* Variables for purchase menu */
 	private static final String PURCHASE_PROCESS_OPTION_FEED_MONEY = "Feed Money";
@@ -36,37 +35,12 @@ public class VendingMachineCLI {
 	}
 
 	//============Helper Functions============
-	public void logAction(String action)
-	{
-		LocalDateTime myDateObj = LocalDateTime.now();
-		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss a");
-		String formattedDate = myDateObj.format(myFormatObj);
-		Log.log(formattedDate + action);
-	}
 
 	public double twoDecimals(double money)
 	{
 		String toTwoDecimals = String.format("%.2f", money);
 		return Double.parseDouble(toTwoDecimals);
 	}
-
-	public void displayChange(int quarters, int dimes, int nickels)
-	{
-		System.out.println("Your change: ");
-		if (quarters > 0)
-		{
-			System.out.println("Number of Quarters: " + quarters);
-		}
-		if (dimes > 0)
-		{
-			System.out.println("Number Of Dimes: " + dimes);
-		}
-		if (nickels > 0)
-		{
-			System.out.println("Number Of Nickels: " + nickels);
-		}
-	}
-	//========================================
 
 	//============Main Functions==============
 	/*
@@ -167,11 +141,11 @@ public class VendingMachineCLI {
 			double money = Double.parseDouble(answer);
 			if ((int) money == money)
 			{
-				double beforeMoney = this.currentMoney;
-				this.currentMoney += money;
-				double afterMoney = this.currentMoney;
-				logAction(" FEED MONEY: $" + beforeMoney + " $" + afterMoney);
-				System.out.println("You added: $" + money + "! Current Money Provided: $" + this.currentMoney);
+				double beforeMoney = currentMoney;
+				currentMoney += money;
+				double afterMoney = currentMoney;
+				Log.logAction(" FEED MONEY: $" + beforeMoney + " $" + afterMoney);
+				System.out.println("You added: $" + money + "! Current Money Provided: $" + currentMoney);
 			}
 			else
 			{
@@ -215,11 +189,11 @@ public class VendingMachineCLI {
 			{
 				if (currentMoney >= item.getPrice())
 				{
-					double beforeMoney = this.currentMoney;
-					this.currentMoney -= item.getPrice();
-					double roundToTwoDecimals = twoDecimals(this.currentMoney);
-					this.currentMoney = roundToTwoDecimals;
-					double afterMoney = this.currentMoney;
+					double beforeMoney = currentMoney;
+					currentMoney -= item.getPrice();
+					double roundToTwoDecimals = twoDecimals(currentMoney);
+					currentMoney = roundToTwoDecimals;
+					double afterMoney = currentMoney;
 
 					String itemType = item.getType();
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
@@ -239,7 +213,7 @@ public class VendingMachineCLI {
 							System.out.println("Chew Chew, Yum!");
 							break;
 					}
-					logAction(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
+					Log.logAction(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
 					purchaseMenu();
 				}
 				else
@@ -258,54 +232,17 @@ public class VendingMachineCLI {
 	public void finishTransaction()
 	{
 		System.out.println("Current Money Provided: $" + currentMoney);
-		int numberOfQuarters = 0;
-		int numberOfDimes = 0;
-		int numberOfNickels = 0;
 		String balanceInString = String.valueOf(currentMoney);
 		String[] wholeDollarAndChange = balanceInString.split("\\.");
 
-		//Deal with whole dollars.
-		int wholeDollars =  Integer.parseInt(wholeDollarAndChange[0]);
-		numberOfQuarters += wholeDollars * 4;
+		int[] coins = Sales.getChange(wholeDollarAndChange);
 
-		//Deal with change.
-		int change = Integer.parseInt(wholeDollarAndChange[1]);
+		double beforeMoney = currentMoney;
+		currentMoney = 0;
+		double afterMoney = currentMoney;
 
-		//See if you can get the remaining change in quarters.
-		if (change % 25 == 0)
-		{
-			numberOfQuarters += change / 25;
-		}
-		else
-		{
-			//Get possible quarters otherwise.
-			int possibleQuarters = change / 25;
-			numberOfQuarters += possibleQuarters;
-			change -= (possibleQuarters * 25);
-
-			//See if you can get the remaining change in dimes.
-			if (change % 10 == 0)
-			{
-				numberOfDimes += change / 10;
-			}
-
-			else
-			{
-				//Get possible dimes otherwise.
-				int possibleDimes = change / 10;
-				numberOfDimes += possibleDimes;
-				change -= (possibleDimes * 10);
-
-				//Get the remaining in nickels.
-				numberOfNickels += change / 5;
-				change = 0;
-			}
-		}
-		double beforeMoney = this.currentMoney;
-		this.currentMoney = 0;
-		double afterMoney = this.currentMoney;
-		logAction(" GIVE CHANGE: $" + beforeMoney + " $" + afterMoney);
-		displayChange(numberOfQuarters, numberOfDimes, numberOfNickels);
+		Log.logAction(" GIVE CHANGE: $" + beforeMoney + " $" + afterMoney);
+		Sales.displayChange(coins[0], coins[1], coins[2]);
 	}
 
 	/*
@@ -329,7 +266,11 @@ public class VendingMachineCLI {
 			{
 				break;
 			}
-			//OPTION 4 HERE
+			else if (choice.equals(MAIN_MENU_OPTION_HIDDEN))
+			{
+				System.out.println("Sales Report Created.");
+				Log.salesReport(availableItems);
+			}
 		}
 	}
 

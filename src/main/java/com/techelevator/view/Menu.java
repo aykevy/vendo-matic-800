@@ -44,8 +44,12 @@ public class Menu {
 	private void displayMenuOptions(Object[] options) {
 		out.println();
 		for (int i = 0; i < options.length; i++) {
-			int optionNum = i + 1;
-			out.println(optionNum + ") " + options[i]);
+			//Made it so that when it gets to 3, it doesn't list as option to make it hidden.
+			if (i != 3)
+			{
+				int optionNum = i + 1;
+				out.println(optionNum + ") " + options[i]);
+			}
 		}
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
 		out.flush();
