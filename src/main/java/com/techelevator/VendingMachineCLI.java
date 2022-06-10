@@ -23,9 +23,6 @@ public class VendingMachineCLI {
 	private static final String PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION = "Finish Transaction";
 	private static final String[] PURCHASE_PROCESS_OPTIONS = {PURCHASE_PROCESS_OPTION_FEED_MONEY, PURCHASE_PROCESS_OPTION_SELECT_PRODUCT, PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION};
 
-
-
-
 	private Menu menu;
 
 	private Map<String, Item> availableItems = new HashMap<String, Item>();
@@ -57,32 +54,65 @@ public class VendingMachineCLI {
 		}
 		catch(FileNotFoundException e)
 		{
-			System.out.println("Problem with populating: " + e.getMessage());
+			System.out.println("Problem with populate: " + e.getMessage());
 		}
 	}
 
 	public void displayMenu()
 	{
-		System.out.println("DISPLAYING MENU");
+		System.out.println("========================MENU========================");
 		Map<String, Item> sortedMap = new TreeMap<String, Item>(availableItems);
 		for (Map.Entry<String, Item> service : sortedMap.entrySet())
 		{
 			String itemName = service.getValue().getName();
 			double itemPrice = service.getValue().getPrice();
 			int quantity = service.getValue().getQuantity();
-			System.out.println(service.getKey() + ": " + itemName + " | " + "Price: " + itemPrice + " | Remaining: " + quantity);
+			if (quantity == 0)
+			{
+				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + itemPrice + " | Remaining: SOLD OUT" );
+			}
+			else
+			{
+				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + itemPrice + " | Remaining: " + quantity);
+			}
 		}
+		System.out.println("====================================================");
+	}
+
+	public void purchaseMenu()
+	{
 		System.out.println("");
+		System.out.println("Current Money Provided: " + currentMoney);
+		String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_PROCESS_OPTIONS);
+		if (choice2.equals(PURCHASE_PROCESS_OPTION_FEED_MONEY))
+		{
+			feedMoney();
+		}
+		else if (choice2.equals(PURCHASE_PROCESS_OPTION_SELECT_PRODUCT))
+		{
+			selectProduct();
+		}
+		else if (choice2.equals(PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION))
+		{
+			finishTransaction();
+		}
 	}
 
 	public void feedMoney()
 	{
-		System.out.print("How much money you want to put in: ");
+		System.out.print("How much money you want to put in (whole dollar amounts): ");
 		Scanner userInput = new Scanner(System.in);
 		String answer = userInput.nextLine();
 		double money = Double.parseDouble(answer);
-		this.currentMoney += money;
-		System.out.println("You added: " + money + "! Current Balance: " + this.currentMoney);
+		if ((int)money == money)
+		{
+			this.currentMoney += money;
+			System.out.println("You added: " + money + "! Current Money Provided: " + this.currentMoney);
+		}
+		else
+		{
+			System.out.println("The amount of money you have given is not in whole dollars, try again!");
+		}
 	}
 
 	public void selectProduct()
@@ -92,46 +122,53 @@ public class VendingMachineCLI {
 		Scanner userInput = new Scanner(System.in);
 		String answer = userInput.nextLine();
 
-		Item item = availableItems.get(answer);
-		if (item.getQuantity() == 0)
+		if (!availableItems.containsKey(answer))
 		{
-			System.out.println("Sorry, that item is sold out!!!!!! Sheeesh");
+			System.out.println("Sorry, that product code doesn't exist!");
+			purchaseMenu();
 		}
 		else
 		{
-			if (currentMoney >= item.getPrice())
+			Item item = availableItems.get(answer);
+			if (item.getQuantity() == 0)
 			{
-				currentMoney -= item.getPrice();
-				String itemType = item.getType();
-				//item.setQuantity(item.getQuantity() - 1);
-
-				availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
-				switch (itemType)
-				{
-					case "Chip":
-						System.out.println("Crunch Crunch, Yum!");
-						break;
-					case "Candy":
-						System.out.println("Munch Munch, Yum!");
-						break;
-					case "Drink":
-						System.out.println("Glug Glug, Yum!");
-						break;
-					case "Gum":
-						System.out.println("Chew Chew, Yum!");
-						break;
-				}
+				System.out.println("Sorry, that item is sold out!");
+				purchaseMenu();
 			}
-
 			else
 			{
-				System.out.println("You broke bruh");
+				if (currentMoney >= item.getPrice())
+				{
+					currentMoney -= item.getPrice();
+					String itemType = item.getType();
+					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
+					switch (itemType)
+					{
+						case "Chip":
+							System.out.println("Crunch Crunch, Yum!");
+							break;
+						case "Candy":
+							System.out.println("Munch Munch, Yum!");
+							break;
+						case "Drink":
+							System.out.println("Glug Glug, Yum!");
+							break;
+						case "Gum":
+							System.out.println("Chew Chew, Yum!");
+							break;
+					}
+					System.out.println("Current Money Provided: " + currentMoney);
+				}
+				else
+				{
+					System.out.println("You don't have enough money.");
+					purchaseMenu();
+				}
 			}
-
 		}
-		System.out.println("Current balance: " + currentMoney);
 	}
 
+	//Helper function for finish transaction.
 	public void displayChange(int quarters, int dimes, int nickels)
 	{
 		System.out.println("Your change: ");
@@ -142,19 +179,18 @@ public class VendingMachineCLI {
 
 	public void finishTransaction()
 	{
-		System.out.println("Your current money is: " + currentMoney);
+		System.out.println("Current Money Provided: " + currentMoney);
 		int numberOfQuarters = 0; //.25
 		int numberOfDimes = 0; //.10
 		int numberOfNickels = 0; //.05
 		String balanceInString = String.valueOf(currentMoney);
 		String[] wholeDollarAndChange = balanceInString.split("\\.");
 
-		//Dealt with whole dollars
-
+		//Deal with whole dollars.
 		int wholeDollars =  Integer.parseInt(wholeDollarAndChange[0]);
 		numberOfQuarters += wholeDollars * 4;
 
-		//Deal Change
+		//Deal with change.
 		int change = Integer.parseInt(wholeDollarAndChange[1]);
 
 		//See if you can get the remaining change in quarters.
@@ -184,42 +220,25 @@ public class VendingMachineCLI {
 
 				//Get the remaining in nickels.
 				numberOfNickels += change / 5;
-
+				change = 0;
 			}
 		}
 		this.currentMoney = 0;
 		displayChange(numberOfQuarters, numberOfDimes, numberOfNickels);
 	}
 
-
 	public void run()
 	{
 		while (true)
 		{
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
-
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS))
 			{
 				displayMenu();
 			}
 			else if (choice.equals(MAIN_MENU_OPTION_PURCHASE))
 			{
-				System.out.println("Current Money Provided: " + currentMoney);
-				String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_PROCESS_OPTIONS);
-				if (choice2.equals(PURCHASE_PROCESS_OPTION_FEED_MONEY))
-				{
-					feedMoney();
-				}
-
-				else if (choice2.equals(PURCHASE_PROCESS_OPTION_SELECT_PRODUCT))
-				{
-					selectProduct();
-				}
-
-				else if (choice2.equals(PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION))
-				{
-					finishTransaction();
-				}
+				purchaseMenu();
 			}
 			else if(choice.equals(MAIN_MENU_OPTION_EXIT))
 			{
