@@ -125,8 +125,7 @@ public class VendingMachineCLI {
 	public void time(String action)
 	{
 		LocalDateTime myDateObj = LocalDateTime.now();
-		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
+		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss a");
 		String formattedDate = myDateObj.format(myFormatObj);
 		Log.log(formattedDate + action);
 	}
@@ -136,7 +135,6 @@ public class VendingMachineCLI {
 		String toTwoDecimals = String.format("%.2f", money);
 		return Double.parseDouble(toTwoDecimals);
 	}
-
 
 	public void selectProduct()
 	{
@@ -188,7 +186,6 @@ public class VendingMachineCLI {
 					}
 					time(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
 					purchaseMenu();
-
 				}
 				else
 				{
@@ -220,9 +217,9 @@ public class VendingMachineCLI {
 	public void finishTransaction()
 	{
 		System.out.println("Current Money Provided: $" + currentMoney);
-		int numberOfQuarters = 0; //.25
-		int numberOfDimes = 0; //.10
-		int numberOfNickels = 0; //.05
+		int numberOfQuarters = 0;
+		int numberOfDimes = 0;
+		int numberOfNickels = 0;
 		String balanceInString = String.valueOf(currentMoney);
 		String[] wholeDollarAndChange = balanceInString.split("\\.");
 
@@ -282,9 +279,9 @@ public class VendingMachineCLI {
 			}
 			else if(choice.equals(MAIN_MENU_OPTION_EXIT))
 			{
-				//do exit
 				break;
 			}
+			//OPTION 4 HERE
 		}
 	}
 
@@ -296,5 +293,3 @@ public class VendingMachineCLI {
 		cli.run();
 	}
 }
-
-//System.out.printf("%.2f", currentMONEY)

@@ -1,7 +1,6 @@
 package com.techelevator.view;
 
 import java.io.*;
-import java.nio.charset.Charset;
 
 public class Log {
     public static void log(String message)
@@ -25,13 +24,10 @@ public class Log {
                     System.out.println("File not found.");
                 }
             }
-
         }
         catch (Exception e)
         {
             System.out.println("Unable to create log.txt");
         }
     }
-
 }
-
