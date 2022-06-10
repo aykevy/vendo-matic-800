@@ -8,30 +8,70 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-import java.time.LocalDateTime; // Import the LocalDateTime class
-import java.time.format.DateTimeFormatter; // Import the DateTimeFormatter class
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class VendingMachineCLI {
 
+	/* Variables for main menu */
 	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
 	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
 	private static final String MAIN_MENU_OPTION_EXIT = "Exit";
 	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE, MAIN_MENU_OPTION_EXIT };
 
+	/* Variables for purchase menu */
 	private static final String PURCHASE_PROCESS_OPTION_FEED_MONEY = "Feed Money";
 	private static final String PURCHASE_PROCESS_OPTION_SELECT_PRODUCT = "Select Product";
 	private static final String PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION = "Finish Transaction";
 	private static final String[] PURCHASE_PROCESS_OPTIONS = {PURCHASE_PROCESS_OPTION_FEED_MONEY, PURCHASE_PROCESS_OPTION_SELECT_PRODUCT, PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION};
 
 	private Menu menu;
-
 	private Map<String, Item> availableItems = new HashMap<String, Item>();
 	private double currentMoney = 0.00;
 
-	public VendingMachineCLI(Menu menu) {
+	//============Constructor=================
+	public VendingMachineCLI(Menu menu)
+	{
 		this.menu = menu;
 	}
 
+	//============Helper Functions============
+	public void logAction(String action)
+	{
+		LocalDateTime myDateObj = LocalDateTime.now();
+		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss a");
+		String formattedDate = myDateObj.format(myFormatObj);
+		Log.log(formattedDate + action);
+	}
+
+	public double twoDecimals(double money)
+	{
+		String toTwoDecimals = String.format("%.2f", money);
+		return Double.parseDouble(toTwoDecimals);
+	}
+
+	public void displayChange(int quarters, int dimes, int nickels)
+	{
+		System.out.println("Your change: ");
+		if (quarters > 0)
+		{
+			System.out.println("Number of Quarters: " + quarters);
+		}
+		if (dimes > 0)
+		{
+			System.out.println("Number Of Dimes: " + dimes);
+		}
+		if (nickels > 0)
+		{
+			System.out.println("Number Of Nickels: " + nickels);
+		}
+	}
+	//========================================
+
+	//============Main Functions==============
+	/*
+		Takes a file and populates the hashmap using the slot location as key and stores other information into an Item as value
+	*/
 	public void populate()
 	{
 		File vendingMachineItems = new File(System.getProperty("user.dir") + "\\" + "vendingmachine.csv");
@@ -50,7 +90,6 @@ public class VendingMachineCLI {
 				Item item = new Item(itemName, itemPrice, itemType);
 				availableItems.put(slotLocation, item);
 			}
-
 		}
 		catch(FileNotFoundException e)
 		{
@@ -58,6 +97,9 @@ public class VendingMachineCLI {
 		}
 	}
 
+	/*
+		Sorts through the hashmap and displays every item along with their properties ordered by slot location.
+	*/
 	public void displayMenu()
 	{
 		System.out.println("========================MENU========================");
@@ -79,6 +121,9 @@ public class VendingMachineCLI {
 		System.out.println("====================================================");
 	}
 
+	/*
+		Displays the purchase menu with the option to feed money, select product, and finish transaction.
+	*/
 	public void purchaseMenu()
 	{
 		System.out.println("");
@@ -98,6 +143,10 @@ public class VendingMachineCLI {
 		}
 	}
 
+	/*
+		1) Feed Money, takes whole number inputs and adds to the customer balance.
+			-Logs money insert into the log.txt - NOT DONE YET
+	*/
 	public void feedMoney()
 	{
 		try
@@ -108,7 +157,10 @@ public class VendingMachineCLI {
 			double money = Double.parseDouble(answer);
 			if ((int) money == money)
 			{
+				double beforeMoney = this.currentMoney;
 				this.currentMoney += money;
+				double afterMoney = this.currentMoney;
+				logAction(" FEED MONEY: $" + beforeMoney + " $" + afterMoney);
 				System.out.println("You added: $" + money + "! Current Money Provided: $" + this.currentMoney);
 			}
 			else
@@ -122,20 +174,13 @@ public class VendingMachineCLI {
 		}
 	}
 
-	public void time(String action)
-	{
-		LocalDateTime myDateObj = LocalDateTime.now();
-		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss a");
-		String formattedDate = myDateObj.format(myFormatObj);
-		Log.log(formattedDate + action);
-	}
-
-	public double twoDecimals(double money)
-	{
-		String toTwoDecimals = String.format("%.2f", money);
-		return Double.parseDouble(toTwoDecimals);
-	}
-
+	/*
+		2) Allows customer to select product.
+			-Handles user input if produce code doesn't exist
+			-Handles user input if item is out of stock
+			-Displays appropriate message based on item type.
+			-Logs purchase into log.txt
+	*/
 	public void selectProduct()
 	{
 		displayMenu();
@@ -160,11 +205,11 @@ public class VendingMachineCLI {
 			{
 				if (currentMoney >= item.getPrice())
 				{
-					double beforeMoney = currentMoney;
-					currentMoney -= item.getPrice();
-					double roundToTwoDecimals = twoDecimals(currentMoney);
-					currentMoney = roundToTwoDecimals;
-					double afterMoney = currentMoney;
+					double beforeMoney = this.currentMoney;
+					this.currentMoney -= item.getPrice();
+					double roundToTwoDecimals = twoDecimals(this.currentMoney);
+					this.currentMoney = roundToTwoDecimals;
+					double afterMoney = this.currentMoney;
 
 					String itemType = item.getType();
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
@@ -184,7 +229,7 @@ public class VendingMachineCLI {
 							System.out.println("Chew Chew, Yum!");
 							break;
 					}
-					time(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
+					logAction(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
 					purchaseMenu();
 				}
 				else
@@ -196,24 +241,10 @@ public class VendingMachineCLI {
 		}
 	}
 
-	//Helper function for finish transaction.
-	public void displayChange(int quarters, int dimes, int nickels)
-	{
-		System.out.println("Your change: ");
-		if (quarters > 0)
-		{
-			System.out.println("Number of Quarters: " + quarters);
-		}
-		if (dimes > 0)
-		{
-			System.out.println("Number Of Dimes: " + dimes);
-		}
-		if (nickels > 0)
-		{
-			System.out.println("Number Of Nickels: " + nickels);
-		}
-	}
-
+	/*
+		3) Finish customer purchases and gives them the change based on the fewest coins needed.
+			-Returns to first menu after finishing transaction.
+	*/
 	public void finishTransaction()
 	{
 		System.out.println("Current Money Provided: $" + currentMoney);
@@ -260,10 +291,17 @@ public class VendingMachineCLI {
 				change = 0;
 			}
 		}
+		double beforeMoney = this.currentMoney;
 		this.currentMoney = 0;
+		double afterMoney = this.currentMoney;
+		logAction(" GIVE CHANGE: $" + beforeMoney + " $" + afterMoney);
 		displayChange(numberOfQuarters, numberOfDimes, numberOfNickels);
 	}
 
+	/*
+		Runs the program and displays the main option.
+			-Has a hidden 4th option for sales report.
+	*/
 	public void run()
 	{
 		while (true)
