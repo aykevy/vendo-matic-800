@@ -1,11 +1,15 @@
 package com.techelevator;
 
 import com.techelevator.view.Item;
+import com.techelevator.view.Log;
 import com.techelevator.view.Menu;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+
+import java.time.LocalDateTime; // Import the LocalDateTime class
+import java.time.format.DateTimeFormatter; // Import the DateTimeFormatter class
 
 public class VendingMachineCLI {
 
@@ -118,6 +122,15 @@ public class VendingMachineCLI {
 		}
 	}
 
+	public void time(String action)
+	{
+		LocalDateTime myDateObj = LocalDateTime.now();
+		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+		String formattedDate = myDateObj.format(myFormatObj);
+		Log.log(formattedDate + action);
+	}
+
 	public void selectProduct()
 	{
 		displayMenu();
@@ -142,7 +155,10 @@ public class VendingMachineCLI {
 			{
 				if (currentMoney >= item.getPrice())
 				{
+					double beforeMoney = currentMoney;
 					currentMoney -= item.getPrice();
+					double afterMoney = currentMoney;
+
 					String itemType = item.getType();
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
 					System.out.println("Dispensing item.....");
@@ -161,7 +177,9 @@ public class VendingMachineCLI {
 							System.out.println("Chew Chew, Yum!");
 							break;
 					}
+					time(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
 					purchaseMenu();
+
 				}
 				else
 				{
@@ -264,7 +282,10 @@ public class VendingMachineCLI {
 	public static void main(String[] args) {
 		Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
+		Log log = new Log();
 		cli.populate();
 		cli.run();
 	}
 }
+
+//System.out.printf("%.2f", currentMONEY)
