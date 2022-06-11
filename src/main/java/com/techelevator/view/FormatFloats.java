@@ -1,6 +1,7 @@
 package com.techelevator.view;
 
-public class FormatFloats {
+public class FormatFloats
+{
     /*
 		Sometimes booleans have like a lot of leading zeroes like 15.500000000002, so this fixes that,
 		by making it to two decimal points, so it would be 15.50.
@@ -27,5 +28,4 @@ public class FormatFloats {
         }
         return dollars + "." + cents;
     }
-
 }

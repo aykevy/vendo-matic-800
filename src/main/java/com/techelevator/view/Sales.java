@@ -1,6 +1,10 @@
 package com.techelevator.view;
 
 public class Sales {
+
+    /*
+        Calculate the coins to given in change with the least amount of coins needed.
+    */
     public static int[] getChange(String[] wholeDollarAndChange)
     {
         int numberOfQuarters = 0;
@@ -37,7 +41,6 @@ public class Sales {
             {
                 numberOfDimes += change / 10;
             }
-
             else
             {
                 //Get possible dimes otherwise.
@@ -54,6 +57,9 @@ public class Sales {
         return coins;
     }
 
+    /*
+        Displays the change depending on the coins given.
+    */
     public static void displayChange(int quarters, int dimes, int nickels)
     {
         System.out.println("Your change: ");

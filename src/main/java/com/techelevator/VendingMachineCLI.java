@@ -28,29 +28,19 @@ public class VendingMachineCLI {
 	private Map<String, Item> availableItems = new HashMap<String, Item>();
 	private double currentMoney = 0.00;
 
-	/*
-		Constructor for VendingMachineCLI that takes in one parameter, menu.
-	*/
+	/* Constructor for VendingMachineCLI that takes in one parameter, menu. */
 	public VendingMachineCLI(Menu menu)
 	{
 		this.menu = menu;
 	}
 
 	/*
-		Takes a file and populates the hashmap using the slot location as key and stores other information into an Item as value
+		Takes a file using a path according to your OS and populates the hashmap using the slot location
+		as key and stores other information	into an Item as value.
 	*/
 	public void populate()
 	{
-		String path = "";
-		String os = System.getProperty("os.name");
-		if (os.toLowerCase().contains("win"))
-		{
-			path = System.getProperty("user.dir") + "\\" + "vendingmachine.csv";
-		}
-		else if (os.toLowerCase().contains("mac"))
-		{
-			path = System.getProperty("user.dir") + "/" + "vendingmachine.csv";
-		}
+		String path = Log.getOSPathVendingMachineCSV();
 		File vendingMachineItems = new File(path);
 		try (Scanner content = new Scanner(vendingMachineItems))
 		{
@@ -74,9 +64,7 @@ public class VendingMachineCLI {
 		}
 	}
 
-	/*
-		Sorts through the hashmap and displays every item along with their properties ordered by slot location.
-	*/
+	/* Sorts through the hashmap and displays every item along with their properties ordered by slot location. */
 	public void displayMenu()
 	{
 		System.out.println("========================MENU========================");
@@ -98,9 +86,7 @@ public class VendingMachineCLI {
 		System.out.println("====================================================");
 	}
 
-	/*
-		Displays the purchase menu with the option to feed money, select product, and finish transaction.
-	*/
+	/* Displays the purchase menu with the option to feed money, select product, and finish transaction. */
 	public void purchaseMenu()
 	{
 		System.out.println("");
@@ -191,7 +177,7 @@ public class VendingMachineCLI {
 					double afterMoney = currentMoney;
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
 
-					System.out.println("Dispensing item....."); //CHANGE STUFF HERE
+					System.out.println("Dispensing item: " + item.getName() + ", Price: $" + item.getPrice() + ", Money Remaining : $" + formatDouble(currentMoney)); //CHANGE STUFF HERE
 					String itemType = item.getType();
 					switch (itemType)
 					{

@@ -5,8 +5,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class Menu {
-
+public class Menu
+{
 	private PrintWriter out;
 	private Scanner in;
 
