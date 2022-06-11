@@ -1,13 +1,13 @@
 package com.techelevator;
 
-import com.techelevator.view.Item;
-import com.techelevator.view.Log;
-import com.techelevator.view.Menu;
-import com.techelevator.view.Sales;
+import com.techelevator.view.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+
+import static com.techelevator.view.FormatFloats.formatDouble;
+import static com.techelevator.view.FormatFloats.twoDecimals;
 
 public class VendingMachineCLI {
 
@@ -28,21 +28,14 @@ public class VendingMachineCLI {
 	private Map<String, Item> availableItems = new HashMap<String, Item>();
 	private double currentMoney = 0.00;
 
-	//============Constructor=================
+	/*
+		Constructor for VendingMachineCLI that takes in one parameter, menu.
+	*/
 	public VendingMachineCLI(Menu menu)
 	{
 		this.menu = menu;
 	}
 
-	//============Helper Functions============
-
-	public double twoDecimals(double money)
-	{
-		String toTwoDecimals = String.format("%.2f", money);
-		return Double.parseDouble(toTwoDecimals);
-	}
-
-	//============Main Functions==============
 	/*
 		Takes a file and populates the hashmap using the slot location as key and stores other information into an Item as value
 	*/
@@ -95,11 +88,11 @@ public class VendingMachineCLI {
 			int quantity = service.getValue().getQuantity();
 			if (quantity == 0)
 			{
-				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + itemPrice + " | Remaining: SOLD OUT" );
+				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + formatDouble(itemPrice) + " | Remaining: SOLD OUT" );
 			}
 			else
 			{
-				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + itemPrice + " | Remaining: " + quantity);
+				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + formatDouble(itemPrice) + " | Remaining: " + quantity);
 			}
 		}
 		System.out.println("====================================================");
@@ -111,7 +104,7 @@ public class VendingMachineCLI {
 	public void purchaseMenu()
 	{
 		System.out.println("");
-		System.out.println("Current Money Provided: $" + currentMoney);
+		System.out.println("Current Money Provided: $" + formatDouble(currentMoney));
 		String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_PROCESS_OPTIONS);
 		if (choice2.equals(PURCHASE_PROCESS_OPTION_FEED_MONEY))
 		{
@@ -129,7 +122,7 @@ public class VendingMachineCLI {
 
 	/*
 		1) Feed Money, takes whole number inputs and adds to the customer balance.
-			-Logs money insert into the log.txt - NOT DONE YET
+			-Logs money insert into the log.txt
 	*/
 	public void feedMoney()
 	{
@@ -144,8 +137,8 @@ public class VendingMachineCLI {
 				double beforeMoney = currentMoney;
 				currentMoney += money;
 				double afterMoney = currentMoney;
-				Log.logAction(" FEED MONEY: $" + beforeMoney + " $" + afterMoney);
-				System.out.println("You added: $" + money + "! Current Money Provided: $" + currentMoney);
+				Log.logAction(" FEED MONEY: $" + formatDouble(beforeMoney) + " $" + formatDouble(afterMoney));
+				System.out.println("You added: $" + formatDouble(money) + "! Current Money Provided: $" + formatDouble(currentMoney));
 			}
 			else
 			{
@@ -190,14 +183,16 @@ public class VendingMachineCLI {
 				if (currentMoney >= item.getPrice())
 				{
 					double beforeMoney = currentMoney;
+
 					currentMoney -= item.getPrice();
 					double roundToTwoDecimals = twoDecimals(currentMoney);
 					currentMoney = roundToTwoDecimals;
-					double afterMoney = currentMoney;
 
-					String itemType = item.getType();
+					double afterMoney = currentMoney;
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
-					System.out.println("Dispensing item.....");
+
+					System.out.println("Dispensing item....."); //CHANGE STUFF HERE
+					String itemType = item.getType();
 					switch (itemType)
 					{
 						case "Chip":
@@ -213,7 +208,7 @@ public class VendingMachineCLI {
 							System.out.println("Chew Chew, Yum!");
 							break;
 					}
-					Log.logAction(" " + item.getName() + " " + answer + " $" + beforeMoney + " $" + afterMoney);
+					Log.logAction(" " + item.getName() + " " + answer + " $" + formatDouble(beforeMoney) + " $" + formatDouble(afterMoney));
 					purchaseMenu();
 				}
 				else
@@ -231,7 +226,7 @@ public class VendingMachineCLI {
 	*/
 	public void finishTransaction()
 	{
-		System.out.println("Current Money Provided: $" + currentMoney);
+		System.out.println("Current Money Provided: $" + formatDouble(currentMoney));
 		String balanceInString = String.valueOf(currentMoney);
 		String[] wholeDollarAndChange = balanceInString.split("\\.");
 
@@ -241,7 +236,7 @@ public class VendingMachineCLI {
 		currentMoney = 0;
 		double afterMoney = currentMoney;
 
-		Log.logAction(" GIVE CHANGE: $" + beforeMoney + " $" + afterMoney);
+		Log.logAction(" GIVE CHANGE: $" + formatDouble(beforeMoney) + " $" + formatDouble(afterMoney));
 		Sales.displayChange(coins[0], coins[1], coins[2]);
 	}
 

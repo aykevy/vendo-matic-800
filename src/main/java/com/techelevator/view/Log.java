@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-public class Log {
+public class Log
+{
     public static void log(String message)
     {
         File capstoneDirectory = new File(System.getProperty("user.dir"));
@@ -72,7 +73,7 @@ public class Log {
                         writer.println(itemName + "|" + quantitySold);
                     }
                     writer.println("");
-                    writer.print("TOTAL SALES: " + total);
+                    writer.print("TOTAL SALES: " + FormatFloats.formatDouble(total));
                 }
                 catch(FileNotFoundException e)
                 {
