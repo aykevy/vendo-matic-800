@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-import static com.techelevator.view.FormatFloats.formatDouble;
-import static com.techelevator.view.FormatFloats.twoDecimals;
+import static com.techelevator.view.FormatDoubles.formatDouble;
+import static com.techelevator.view.FormatDoubles.twoDecimals;
 
 public class VendingMachineCLI {
 
@@ -125,15 +125,18 @@ public class VendingMachineCLI {
 				double afterMoney = currentMoney;
 				Log.logAction(" FEED MONEY: $" + formatDouble(beforeMoney) + " $" + formatDouble(afterMoney));
 				System.out.println("You added: $" + formatDouble(money) + "! Current Money Provided: $" + formatDouble(currentMoney));
+				purchaseMenu();
 			}
 			else
 			{
 				System.out.println("The amount of money you have given is not in whole dollars, try again!");
+				purchaseMenu();
 			}
 		}
 		catch (Exception e)
 		{
 			System.out.println("The amount you entered is an invalid input!");
+			purchaseMenu();
 		}
 	}
 

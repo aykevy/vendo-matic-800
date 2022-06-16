@@ -9,12 +9,18 @@ public class Item
 
     private static final int MAX_QUANTITY = 5;
 
+    /*
+        Constructor for an item object.
+    */
     public Item(String name, double price, String type) {
         this.name = name;
         this.price = price;
         this.type = type;
     }
 
+    /*
+        Below are all getters and setters for an item object.
+    */
     public String getName() {
         return name;
     }

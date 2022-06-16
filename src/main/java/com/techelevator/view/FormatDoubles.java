@@ -1,6 +1,6 @@
 package com.techelevator.view;
 
-public class FormatFloats
+public class FormatDoubles
 {
     /*
 		Sometimes booleans have like a lot of leading zeroes like 15.500000000002, so this fixes that,

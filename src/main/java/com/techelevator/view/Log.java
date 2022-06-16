@@ -100,7 +100,7 @@ public class Log
                         writer.println(itemName + "|" + quantitySold);
                     }
                     writer.println("");
-                    writer.print("TOTAL SALES: " + FormatFloats.formatDouble(total));
+                    writer.print("TOTAL SALES: " + FormatDoubles.formatDouble(total));
                 }
                 catch(FileNotFoundException e)
                 {
