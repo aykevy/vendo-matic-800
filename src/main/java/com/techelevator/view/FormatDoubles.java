@@ -12,7 +12,8 @@ public class FormatDoubles
         return Double.parseDouble(toTwoDecimals);
     }
 
-    /*Sometimes doubles will not have a leading zero, so we can format it and add a leading 0.
+    /*
+        Sometimes doubles will not have a leading zero, so we can format it and add a leading 0.
         Example: 15.5 -> 15.50
                  10.0 -> 10.00
     */

@@ -4,6 +4,8 @@ public class Sales {
 
     /*
         Calculate the coins to given in change with the least amount of coins needed.
+            -wholeDollarAndChange[0] = whole dollar amount
+            -wholeDollarAndChange[1] = change amount
     */
     public static int[] getChange(String[] wholeDollarAndChange)
     {

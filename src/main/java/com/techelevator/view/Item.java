@@ -17,6 +17,29 @@ public class Item
         this.price = price;
         this.type = type;
     }
+    /*
+        Prints out the message based on item type.
+    */
+    public void printUniqueTypeMessage()
+    {
+        switch (this.type.toLowerCase())
+        {
+            case "chip":
+                System.out.println("Crunch Crunch, Yum!");
+                break;
+            case "candy":
+                System.out.println("Munch Munch, Yum!");
+                break;
+            case "drink":
+                System.out.println("Glug Glug, Yum!");
+                break;
+            case "gum":
+                System.out.println("Chew Chew, Yum!");
+                break;
+            default:
+                break;
+        }
+    }
 
     /*
         Below are all getters and setters for an item object.

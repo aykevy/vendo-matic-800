@@ -74,14 +74,9 @@ public class VendingMachineCLI {
 			String itemName = service.getValue().getName();
 			double itemPrice = service.getValue().getPrice();
 			int quantity = service.getValue().getQuantity();
-			if (quantity == 0)
-			{
-				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + formatDouble(itemPrice) + " | Remaining: SOLD OUT" );
-			}
-			else
-			{
-				System.out.println(service.getKey() + ": " + itemName + " | " + "Price: $" + formatDouble(itemPrice) + " | Remaining: " + quantity);
-			}
+			String display = service.getKey() + ": " + itemName + " | " + "Price: $" + formatDouble(itemPrice) + " | Remaining: ";
+			String displayQuantity = (quantity == 0) ? "SOLD OUT" : String.valueOf(quantity);
+			System.out.println(display + displayQuantity);
 		}
 		System.out.println("====================================================");
 	}
@@ -181,22 +176,7 @@ public class VendingMachineCLI {
 					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
 
 					System.out.println("Dispensing item: " + item.getName() + ", Price: $" + item.getPrice() + ", Money Remaining : $" + formatDouble(currentMoney)); //CHANGE STUFF HERE
-					String itemType = item.getType();
-					switch (itemType)
-					{
-						case "Chip":
-							System.out.println("Crunch Crunch, Yum!");
-							break;
-						case "Candy":
-							System.out.println("Munch Munch, Yum!");
-							break;
-						case "Drink":
-							System.out.println("Glug Glug, Yum!");
-							break;
-						case "Gum":
-							System.out.println("Chew Chew, Yum!");
-							break;
-					}
+					item.printUniqueTypeMessage();
 					Log.logAction(" " + item.getName() + " " + answer + " $" + formatDouble(beforeMoney) + " $" + formatDouble(afterMoney));
 					purchaseMenu();
 				}
@@ -258,6 +238,9 @@ public class VendingMachineCLI {
 		}
 	}
 
+	/*
+		Executable main function for the program. Used to run the vending machine.
+	*/
 	public static void main(String[] args) {
 		Menu menu = new Menu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
