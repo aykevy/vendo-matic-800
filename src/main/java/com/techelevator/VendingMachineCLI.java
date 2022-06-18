@@ -25,7 +25,7 @@ public class VendingMachineCLI {
 	private static final String[] PURCHASE_PROCESS_OPTIONS = {PURCHASE_PROCESS_OPTION_FEED_MONEY, PURCHASE_PROCESS_OPTION_SELECT_PRODUCT, PURCHASE_PROCESS_OPTION_FINISH_TRANSACTION};
 
 	private Menu menu;
-	private Map<String, Item> availableItems = new HashMap<String, Item>();
+	private Map<String, Item> inventory = new HashMap<String, Item>();
 	private double currentMoney = 0.00;
 
 	/* Constructor for VendingMachineCLI that takes in one parameter, menu. */
@@ -55,7 +55,7 @@ public class VendingMachineCLI {
 				String itemType = informationParsed[3];
 
 				Item item = new Item(itemName, itemPrice, itemType);
-				availableItems.put(slotLocation, item);
+				inventory.put(slotLocation, item);
 			}
 		}
 		catch(FileNotFoundException e)
@@ -68,7 +68,7 @@ public class VendingMachineCLI {
 	public void displayMenu()
 	{
 		System.out.println("========================MENU========================");
-		Map<String, Item> sortedMap = new TreeMap<String, Item>(availableItems);
+		Map<String, Item> sortedMap = new TreeMap<String, Item>(inventory);
 		for (Map.Entry<String, Item> service : sortedMap.entrySet())
 		{
 			String itemName = service.getValue().getName();
@@ -147,14 +147,14 @@ public class VendingMachineCLI {
 		Scanner userInput = new Scanner(System.in);
 		String answer = userInput.nextLine().toUpperCase();
 
-		if (!availableItems.containsKey(answer))
+		if (!inventory.containsKey(answer))
 		{
 			System.out.println("Sorry, that product code doesn't exist!");
 			purchaseMenu();
 		}
 		else
 		{
-			Item item = availableItems.get(answer);
+			Item item = inventory.get(answer);
 			if (item.getQuantity() == 0)
 			{
 				System.out.println("Sorry, that item is sold out!");
@@ -171,7 +171,7 @@ public class VendingMachineCLI {
 					currentMoney = roundToTwoDecimals;
 
 					double afterMoney = currentMoney;
-					availableItems.get(answer).setQuantity(availableItems.get(answer).getQuantity() - 1);
+					inventory.get(answer).setQuantity(inventory.get(answer).getQuantity() - 1);
 
 					System.out.println("Dispensing item: " + item.getName() + ", Price: $" + item.getPrice() + ", Money Remaining : $" + formatDouble(currentMoney)); //CHANGE STUFF HERE
 					item.printUniqueTypeMessage();
@@ -231,7 +231,7 @@ public class VendingMachineCLI {
 			else if (choice.equals(MAIN_MENU_OPTION_HIDDEN))
 			{
 				System.out.println("Sales Report Created.");
-				Log.salesReport(availableItems);
+				Log.salesReport(inventory);
 			}
 		}
 	}

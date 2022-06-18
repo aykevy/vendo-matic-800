@@ -3,8 +3,9 @@ package com.techelevator.view;
 public class FormatDoubles
 {
     /*
-		Sometimes booleans have like a lot of leading zeroes like 15.500000000002, so this fixes that,
-		by making it to two decimal points, so it would be 15.50.
+		Sometimes doubles have like a lot of leading zeroes like 15.500000000002 after doing some
+		arithmetic, so this fixes that by making it to two decimal points, so it would be 15.50.
+	    Doubles use IEEE 754 floating point arithmetic, which is inherently inaccurate.
 	*/
     public static double twoDecimals(double money)
     {

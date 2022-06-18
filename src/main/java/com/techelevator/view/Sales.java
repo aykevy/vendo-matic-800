@@ -65,6 +65,10 @@ public class Sales {
     public static void displayChange(int quarters, int dimes, int nickels)
     {
         System.out.println("Your change: ");
+        if ((quarters == 0) && (dimes == 0) && (nickels == 0))
+        {
+            System.out.println("No change.");
+        }
         if (quarters > 0)
         {
             System.out.println("Number of Quarters: " + quarters);
