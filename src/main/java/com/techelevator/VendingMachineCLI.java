@@ -84,9 +84,7 @@ public class VendingMachineCLI {
 	/* Displays the purchase menu with the option to feed money, select product, and finish transaction. */
 	public void purchaseMenu()
 	{
-		System.out.println("");
-		System.out.println("Current Money Provided: $" + formatDouble(currentMoney));
-		String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_PROCESS_OPTIONS);
+		String choice2 = (String) menu.getChoiceFromOptionsWithMoney(PURCHASE_PROCESS_OPTIONS, currentMoney);
 		if (choice2.equals(PURCHASE_PROCESS_OPTION_FEED_MONEY))
 		{
 			feedMoney();

@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import static com.techelevator.view.FormatDoubles.formatDouble;
+
 public class Menu
 {
 	private PrintWriter out;
@@ -19,6 +21,18 @@ public class Menu
 		Object choice = null;
 		while (choice == null) {
 			displayMenuOptions(options);
+			choice = getChoiceFromUserInput(options);
+		}
+		return choice;
+	}
+
+	/*
+		This is mainly for the purchase menu since we take in money to display it below the options.
+	*/
+	public Object getChoiceFromOptionsWithMoney(Object[] options, double money) {
+		Object choice = null;
+		while (choice == null) {
+			displayMenuOptionsWithMoney(options, money);
 			choice = getChoiceFromUserInput(options);
 		}
 		return choice;
@@ -44,7 +58,7 @@ public class Menu
 	private void displayMenuOptions(Object[] options) {
 		out.println();
 		for (int i = 0; i < options.length; i++) {
-			//Made it so that when it gets to 3, it doesn't list as option to make it hidden.
+			//Made it so that when it gets to 3, it doesn't list as option to make it hidden for sales report.
 			if (i != 3)
 			{
 				int optionNum = i + 1;
@@ -52,6 +66,19 @@ public class Menu
 			}
 		}
 		out.print(System.lineSeparator() + "Please choose an option >>> ");
+		out.flush();
+	}
+
+	/*
+		This is mainly for the purchase menu since we take in money to display it below the options.
+	*/
+	private void displayMenuOptionsWithMoney(Object[] options, double money) {
+		out.println();
+		for (int i = 0; i < options.length; i++) {
+			int optionNum = i + 1;
+			out.println(optionNum + ") " + options[i]);
+		}
+		out.print(System.lineSeparator() + "Current Money Provided: $" + formatDouble(money) + "\n\n" + "Please choose an option >>> ");
 		out.flush();
 	}
 }
