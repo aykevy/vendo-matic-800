@@ -13,12 +13,12 @@ public class Log
     public static String getOSPathVendingMachineCSV()
     {
         String path = "";
-        String os = System.getProperty("os.name");
-        if (os.toLowerCase().contains("win"))
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win"))
         {
             path = System.getProperty("user.dir") + "\\" + "vendingmachine.csv";
         }
-        else if (os.toLowerCase().contains("mac"))
+        else if (os.contains("mac") || os.contains("linux") || os.contains("unix"))
         {
             path = System.getProperty("user.dir") + "/" + "vendingmachine.csv";
         }
